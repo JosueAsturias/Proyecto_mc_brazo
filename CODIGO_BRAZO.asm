@@ -3,8 +3,8 @@
 ;    Filename:	    BRAZO ----> CODIGO_BRAZO.asm		               *
 ;    Date:          xx.11.2018                                                 *
 ;    File Version:  1.0                                                        *
-;    Author:        Miguelitros						       *
-;		    JosuÈ Asturias					       *
+;    Author:        Miguel Garc√≠a						       *
+;		    Josu√© Asturias					       *
 ;    Company:       UVG                                                        *
 ;    Description:   BRAZO 3 ADC, 4 SERVOS		                       *
 ;                                                                              *
@@ -64,9 +64,9 @@ REGRESAR_ISR
     SWAPF   WREG_MEM, 1	    ; le da la vuelta a WREG_MEM
     SWAPF   WREG_MEM, 0	    ; le da la vuelta otra vez y lo guarda en W
     BSF	    INTCON, INTE
-    RETFIE		    ; regresa de la interrupciÛn
+    RETFIE		    ; regresa de la interrupci√≥n
 ; -----------------------------------------------------------------------------
-; AtenciÛn de interrupciÛn TMR0
+; Atenci√≥n de interrupci√≥n TMR0
 INT_RB0
     BCF	    INTCON, INTF
     INCF    PORTD, F
@@ -146,11 +146,11 @@ CONFIG_PUERTOS		;------------------------------------PUERTOS------------
     CLRF    TRISD	 ;   Salidas SELECT demux SERVOS (RD <0:1>
     CLRF    TRISC	 ;   Salidas para PWM
     MOVLW   B'00001101'
-    MOVWF   TRISB	 ;   entrada para RB0/INT , RB2(botÛn abrir), RB3(botÛn cerrar)
+    MOVWF   TRISB	 ;   entrada para RB0/INT , RB2(bot√≥n abrir), RB3(bot√≥n cerrar)
     MOVLW   B'00000010'
     MOVWF   TRISA	 ;   ENTRADA para pot en RA5 (AN4)
     MOVLW   B'0110'	 
-    MOVWF   TRISE	 ;   Entrada para potenciÛmentro en RE <0:2>
+    MOVWF   TRISE	 ;   Entrada para potenci√≥mentro en RE <0:2>
     BCF	    OPTION_REG, 7;   Pull-up habilitada
     MOVLW   B'00001100'	
     MOVWF   WPUB	 ;   resistencia en RB2
@@ -239,7 +239,7 @@ CONFIG_TMR0 ;------------------------------------------- TMR0 ------------------
     
 CONFIG_SERIAL
     BANKSEL TXSTA
-    BCF	    TXSTA, 4		    ; ASINCR”NO
+    BCF	    TXSTA, 4		    ; ASINCR√ìNO
 
 ;Configura el baud rate
     BSF	    TXSTA, BRGH		    ; LOW SPEED
@@ -253,7 +253,7 @@ CONFIG_SERIAL
     BANKSEL RCSTA
     BSF	    RCSTA, SPEN		    ; HABILITAR SERIAL PORT
     BCF	    RCSTA, RX9		    ; SOLO MANEJAREMOS 8BITS DE DATOS
-    BSF	    RCSTA, CREN		    ; HABILITAMOS LA RECEPCI”N 
+    BSF	    RCSTA, CREN		    ; HABILITAMOS LA RECEPCI√ìN 
     BANKSEL TXSTA
     BSF	    TXSTA, TXEN		    ; HABILITO LA TRANSMISION
     RETURN
@@ -304,7 +304,7 @@ BOTON_cerrar:
     MOVWF   CCPR1L_x
     
 COM_SERIAL:
-    MOVLW   .250		    ; ENVÕA 250 POR EL TX
+    MOVLW   .250		    ; ENV√çA 250 POR EL TX
     MOVWF   TXREG
     BTFSS   PIR1, TXIF
     GOTO    $-1
