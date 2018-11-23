@@ -118,6 +118,8 @@ SETUP:
     CLRF    bandera_servo
     BSF	    bandera_servo, 0	; 0:SM1,  1:SM3, 2:SM2,  3:SM4
     CLRF    CCPR1L_x
+    MOVLW   .60
+    MOVWF   CCPR1L_x
     CLRF    CCPR2L_x
     CLRF    CCPR3L_x
     CLRF    CCPR4L_x
@@ -145,14 +147,14 @@ CONFIG_PUERTOS		;------------------------------------PUERTOS------------
     BSF	    STATUS, 5    ; BANCO 1 ---------------------------------------
     CLRF    TRISD	 ;   Salidas SELECT demux SERVOS (RD <0:1>
     CLRF    TRISC	 ;   Salidas para PWM
-    MOVLW   B'00001101'
+    MOVLW   B'00011101'
     MOVWF   TRISB	 ;   entrada para RB0/INT , RB2(botón abrir), RB3(botón cerrar)
     MOVLW   B'00000010'
     MOVWF   TRISA	 ;   ENTRADA para pot en RA5 (AN4)
     MOVLW   B'0110'	 
     MOVWF   TRISE	 ;   Entrada para potenciómentro en RE <0:2>
     BCF	    OPTION_REG, 7;   Pull-up habilitada
-    MOVLW   B'00001100'	
+    MOVLW   B'00011100'	
     MOVWF   WPUB	 ;   resistencia en RB2
     BSF	    STATUS, 6	 ; BANCO 3 ---------------------------------------
     MOVLW   B'11010010'	 ;   Pot en AN: <1,4,6,7>   
@@ -304,7 +306,7 @@ BOTON_cerrar:
     MOVWF   CCPR1L_x
     
 COM_SERIAL:
-    MOVLW   .250		    ; ENVÍA 250 POR EL TX
+    MOVLW   .200		    ; ENVÍA 250 POR EL TX
     MOVWF   TXREG
     BTFSS   PIR1, TXIF
     GOTO    $-1
@@ -379,6 +381,19 @@ DELAY_x
     DECFSZ  var_delay
     goto    $-1
     RETURN
+    
+DELAY_Z
+    MOVLW   .100
+    MOVWF   var_delay
+    DECFSZ  var_delay
+    goto    $-1
+    MOVLW   .1
+    MOVWF   var_delay
+    DECFSZ  var_delay
+    goto    $-1
+    RETURN  
+    
+ 
 ;*************************************************************************************    
     END
 
