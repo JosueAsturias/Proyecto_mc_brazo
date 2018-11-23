@@ -36,7 +36,7 @@ CCPR1L_x		    RES 1
 CCPR2L_x		    RES 1
 CCPR3L_x    		    RES 1		    
 CCPR4L_x		    RES 1
-		    
+ENTRADA			    RES 1		    
 	    
 		    
 ;*******************************************************************************
@@ -306,34 +306,94 @@ BOTON_cerrar:
     MOVWF   CCPR1L_x
     
 COM_SERIAL:
-    MOVLW   .200		    ; ENVÍA 250 POR EL TX
-    MOVWF   TXREG
-    BTFSS   PIR1, TXIF
-    GOTO    $-1
-    
-
-    
-    MOVF   CCPR1L_x, W
+    MOVLW   .200		    ; ENVÍA 200 POR EL TX
     MOVWF   TXREG
     BTFSS   PIR1, TXIF
     GOTO    $-1
 
+    CALL    DELAY_Y
+    MOVF    CCPR1L_x, W
+    MOVWF   TXREG
+    BTFSS   PIR1, TXIF
+    GOTO    $-1
+
+    CALL    DELAY_Y
     MOVF    CCPR2L_x, W
     MOVWF   TXREG
     BTFSS   PIR1, TXIF
     GOTO    $-1    
        
+    CALL    DELAY_Y
     MOVF    CCPR3L_x, W
     MOVWF   TXREG
     BTFSS   PIR1, TXIF
     GOTO    $-1    
     
+    CALL    DELAY_Y
     MOVF    CCPR4L_x, W
     MOVWF   TXREG
     BTFSS   PIR1, TXIF
     GOTO    $-1     
     
+ENTRADA1:
+    CALL    DELAY_Z
+    BTFSS   PIR1,RCIF
     GOTO    INICIO
+    MOVF    RCREG, W
+    MOVWF   ENTRADA
+    
+    MOVLW   .200
+    XORWF   ENTRADA
+    BTFSS   STATUS,Z
+    GOTO    INICIO
+    BSF	    PORTB, 1
+REPRODUCE:
+    CALL    DELAY_Z
+    
+MOTOR_1:
+    BTFSS   PORTB,4
+    GOTO    SALIR_USART
+    BTFSS   PIR1, RCIF
+    GOTO    MOTOR_1
+    MOVF    RCREG, W
+    MOVWF   CCPR1L_x
+
+    
+    CALL    DELAY_Z
+MOTOR_2:
+    BTFSS   PORTB,4
+    GOTO    SALIR_USART
+    BTFSS   PIR1, RCIF
+    GOTO    MOTOR_2
+    MOVF    RCREG, W
+    MOVWF   CCPR2L_x
+   
+    CALL    DELAY_Z
+MOTOR_3:
+    BTFSS   PORTB,4
+    GOTO    SALIR_USART
+    BTFSS   PIR1, RCIF
+    GOTO    MOTOR_3
+    MOVF    RCREG, W
+    MOVWF   CCPR3L_x
+
+    CALL    DELAY_Z
+MOTOR_4:
+    BTFSS   PORTB,4
+    GOTO    SALIR_USART
+    BTFSS   PIR1, RCIF
+    GOTO    MOTOR_4
+    MOVF    RCREG, W
+    MOVWF   CCPR4L_x
+    
+    GOTO    REPRODUCE
+
+SALIR_USART:
+    BCF	    PORTB, 1
+    MOVLW   .60
+    MOVWF   CCPR1L_x
+    GOTO    INICIO
+
     
 
 ;****************************************************** Seleccionar ADC ***********************************
@@ -381,7 +441,14 @@ DELAY_x
     DECFSZ  var_delay
     goto    $-1
     RETURN
-    
+
+DELAY_Y
+    MOVLW   .100
+    MOVWF   var_delay
+    DECFSZ  var_delay
+    goto    $-1
+    RETURN
+
 DELAY_Z
     MOVLW   .100
     MOVWF   var_delay
